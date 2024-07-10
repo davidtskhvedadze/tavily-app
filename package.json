@@ -1,0 +1,19 @@
+{
+  "name": "tavily-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "client": "npm run dev --prefix client",
+    "server": "npm run dev --prefix server",
+    "build:ui": "rm -rf dist && cd ../part2/phonebook && npm run build && cp -r dist ../../part3",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
