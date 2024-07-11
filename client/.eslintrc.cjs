@@ -14,5 +14,11 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    'indent': ['error', 2], 
+    'space-before-blocks': 'error', 
+    'keyword-spacing': 'error', 
+    'no-multiple-empty-lines': ['error', { 'max': 1 }], 
+    'space-in-parens': ['error', 'never'], 
+    'object-curly-spacing': ['error', 'always'], 
   },
 }
