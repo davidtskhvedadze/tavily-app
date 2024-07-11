@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import Home from './components/pages/Home'
+import Home from './pages/Home'
+import UserPage from './pages/UserPage'
+import AuthUserPage from './pages/AuthUserPage'
 
 function App() {
 
@@ -7,6 +9,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/users" element={<UserPage />} />
+        <Route path="/authusers" element={<AuthUserPage />} />
       </Routes>
     </Router>
   )

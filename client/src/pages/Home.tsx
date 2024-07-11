@@ -1,5 +1,5 @@
-import Login from "../Login";
-import spotify from "../../assets/alexander-shatov-JlO3-oY5ZlQ-unsplash.jpg"
+import Login from "../components/Login"
+import spotify from "../assets/alexander-shatov-JlO3-oY5ZlQ-unsplash.jpg"
 
 export default function Home() {
 
