@@ -24,7 +24,6 @@ type PlaylistType = {
 }
 
 export default function AuthUserPage() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [playlists, setPlaylists] = useState<PlaylistType[]>([
     {
       name: "Playlist 1",
@@ -47,6 +46,7 @@ export default function AuthUserPage() {
 
   function handleSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    setPlaylists([...playlists]);
   }
 
   return (
@@ -126,7 +126,6 @@ export default function AuthUserPage() {
               <AccordionContent>
                 <ul>
                   {playlist.songs.map((song, songIndex) => (
-                  // Ensure song keys are unique even if song names are not
                     <li key={`song-${index}-${songIndex}`}>{song.name} - {song.artist}</li>
                   ))}
                 </ul>
