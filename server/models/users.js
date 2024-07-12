@@ -5,7 +5,7 @@ const validator = require('validator');
 const Schema = mongoose.Schema;
 
 const SongSchema = new Schema({
-  name: { type: String },
+  name: { type: String, required: true},
   artist: { type: String, required: true },
 });
 
