@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -23,10 +24,13 @@ export default function Signup() {
     },
   });
 
+  const navigate = useNavigate();
+
   function handleSubmit(values: z.infer<typeof formSchema>) {
     axios.post('http://localhost:3000/api/signup', values)
       .then(response => {
         console.log('Signup successful', response.data);
+        navigate('/users');
       })
       .catch(error => {
         console.error('Signup failed', error.response.data);
@@ -36,7 +40,7 @@ export default function Signup() {
   return (
     <main>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col space-y-8">
           <FormField
             control={form.control}
             name="name"
