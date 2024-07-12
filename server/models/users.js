@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const config = require('../utils/config');
 const validator = require('validator');
 
 const Schema = mongoose.Schema;
@@ -47,7 +48,7 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', async function(next) {
   if (this.isModified('password')) {
     try {
-      const saltRounds = process.env.BCRYPT_SALT_ROUNDS ? parseInt(process.env.BCRYPT_SALT_ROUNDS) : 10;
+      const saltRounds = config.BCRYPT_SALT_ROUNDS ? parseInt(config.BCRYPT_SALT_ROUNDS) : 10;
       this.password = await bcrypt.hash(this.password, saltRounds);
       next();
     } catch (error) {
@@ -57,6 +58,10 @@ userSchema.pre('save', async function(next) {
     next();
   }
 });
+
+userSchema.methods.validPassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
