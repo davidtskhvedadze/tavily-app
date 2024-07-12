@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
+import axios from "axios";
 
 const formSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -23,7 +24,13 @@ export default function Signup() {
   });
 
   function handleSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    axios.post('http://localhost:3000/api/signup', values)
+      .then(response => {
+        console.log('Signup successful', response.data);
+      })
+      .catch(error => {
+        console.error('Signup failed', error.response.data);
+      });
   }
 
   return (

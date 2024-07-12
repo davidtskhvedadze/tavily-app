@@ -2,9 +2,11 @@ const usersRouter = require('express').Router()
 const User = require('../models/users')
 const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
+const path = require('path')
 
-const SECRET = config.JWT_SECRET
+const SECRET = config.JWT_SECRET || 'tavily'
 
+  
 usersRouter.post('/api/signup', (request, response, next) => {
     const body = request.body
     
@@ -23,9 +25,15 @@ usersRouter.post('/api/signup', (request, response, next) => {
 
             const token = jwt.sign(userForToken, SECRET, { expiresIn: '1h' })
 
+            response.cookie('token', token, {
+                httpOnly: true,
+                secure: false, // set to true if your using https
+                sameSite: 'strict',
+            });
+
             response
               .status(201)
-              .send({ token, email: savedUser.email, name: savedUser.name })
+              .json({ message: 'Sign up successful' })
         })
         .catch(error => next(error))
 })
@@ -51,7 +59,14 @@ usersRouter.post('/api/login', async (request, response, next) => {
 
         const token = jwt.sign(userForToken, SECRET, { expiresIn: '1h' });
 
-        response.status(200).send({ token, email: user.email, name: user.name });
+        response.cookie('token', token, {
+            httpOnly: true,
+            secure: false, // Set to true in production if using HTTPS
+            sameSite: 'strict', // Adjust according to your cross-site request needs
+            maxAge: 3600000, // Cookie expiration set to match token expiration
+        });
+
+        response.status(200).json({ message: 'Login successful' });
     } catch (error) {
         next(error);
     }
