@@ -51,80 +51,90 @@ export default function AuthUserPage() {
 
   return (
     <div>
-      <Navbar />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} >
-          <FormField
-            control={form.control}
-            name="filterby"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Filter by</FormLabel>
-                <FormControl>
-                  <select {...field}>
-                    <option value="">Select Filter</option>
-                    <option value="tracks">tracks</option>
-                    <option value="artists">artists</option>
-                  </select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="duration"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>size</FormLabel>
-                <FormControl>
-                  <select {...field}>
-                    <option value="">Select Duration</option>
-                    <option value="short-term">short-term</option>
-                    <option value="medium-term">medium-term</option>
-                    <option value="long-term">long-term</option>
-                  </select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="size"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>size</FormLabel>
-                <FormControl>
-                  <select {...field}>
-                    <option value="">Select Size</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                  </select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit">Submit</Button>
-        </form>
-      </Form>
-      {playlists.map((playlist, index) => (
-        <Accordion key={`accordion-${index}`} type="multiple">
-          <AccordionItem key={`item-${index}`} value={`item-${index}`}>
-            <AccordionTrigger>{playlist.name}</AccordionTrigger>
-            <AccordionContent>
-              <ul>
-                {playlist.songs.map((song, songIndex) => (
+      <div className="fixed top-0 w-full z-50">
+        <Navbar />
+      </div>
+      <div className="bg-gray-50 min-h-screen flex flex-col mt-4 items-center py-12">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className=" flex flex-col w-full max-w-4xl p-6 shadow-md rounded-lg bg-white">
+            <div className="flex flex-wrap justify-center gap-2">
+              <FormField
+                control={form.control}
+                name="filterby"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel className="flex justify-center mt-1 font-semibold">Filter by</FormLabel>
+                    <FormControl className="flex">
+                      <select {...field} className="form-select block w-full p-2 mt-1 border-gray-300 shadow-sm rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-center">
+                        <option value="">Select Filter</option>
+                        <option value="tracks">tracks</option>
+                        <option value="artists">artists</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel className="flex justify-center mt-1 font-semibold">Duration</FormLabel>
+                    <FormControl className="flex">
+                      <select {...field} className="form-select block w-full p-2 mt-1 border-gray-300 shadow-sm rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-center">
+                        <option value="">Select Duration</option>
+                        <option value="short-term">short-term</option>
+                        <option value="medium-term">medium-term</option>
+                        <option value="long-term">long-term</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="size"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel className="flex justify-center mt-1 font-semibold">Size</FormLabel>
+                    <FormControl className="flex">
+                      <select {...field} className="form-select block w-full p-2 mt-1 border-gray-300 shadow-sm rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-center">
+                        <option value="">Select Size</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex justify-center mt-4">
+              <Button type="submit" className="px-6 py-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+               Submit
+              </Button>
+            </div>
+          </form>
+        </Form>
+        {playlists.map((playlist, index) => (
+          <Accordion key={`accordion-${index}`} type="multiple">
+            <AccordionItem key={`item-${index}`} value={`item-${index}`}>
+              <AccordionTrigger>{playlist.name}</AccordionTrigger>
+              <AccordionContent>
+                <ul>
+                  {playlist.songs.map((song, songIndex) => (
                   // Ensure song keys are unique even if song names are not
-                  <li key={`song-${index}-${songIndex}`}>{song.name} - {song.artist}</li>
-                ))}
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      ))} 
+                    <li key={`song-${index}-${songIndex}`}>{song.name} - {song.artist}</li>
+                  ))}
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        ))} 
+      </div>
     </div>
   );
 }

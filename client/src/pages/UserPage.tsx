@@ -4,7 +4,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion";
 
@@ -98,7 +97,20 @@ export default function UserPage() {
                   <FormItem className="flex flex-col">
                     <FormLabel className="flex justify-center mt-1 font-semibold">Genre</FormLabel>
                     <FormControl className="flex">
-                      <Input {...field} className="form-input block w-full mt-1 border-gray-300 shadow-sm rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-center" />
+                      <select {...field} className="form-select block w-full mt-1 p-2 border-gray-300 shadow-sm rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-center">
+                        <option value="">Select Genre</option>
+                        <option value="Pop">Pop</option>
+                        <option value="Rock">Rock</option>
+                        <option value="Hip Hop">Hip Hop</option>
+                        <option value="Jazz">Jazz</option>
+                        <option value="Classical">Classical</option>
+                        <option value="Electronic">Electronic</option>
+                        <option value="Country">Country</option>
+                        <option value="Reggae">Reggae</option>
+                        <option value="Blues">Blues</option>
+                        <option value="R&B/Soul">R&B/Soul</option>
+                        <option value="Indie Pop">Indie Pop</option>
+                      </select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -238,7 +250,20 @@ export default function UserPage() {
                   <FormItem className="flex flex-col">
                     <FormLabel className="flex justify-center mt-1 font-semibold">Language</FormLabel>
                     <FormControl className="flex">
-                      <Input {...field} className="form-input block w-full mt-1 p-2 border-gray-300 shadow-sm rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-center"/>
+                      <select {...field} className="form-select block w-full mt-1 p-2 border-gray-300 shadow-sm rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-center">
+                        <option value="">Select Language</option>
+                        <option value="English">English</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="Mandarin">Mandarin</option>
+                        <option value="French">French</option>
+                        <option value="German">German</option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="Russian">Russian</option>
+                        <option value="Italian">Italian</option>
+                        <option value="Portuguese">Portuguese</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="Korean">Korean</option> 
+                      </select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
