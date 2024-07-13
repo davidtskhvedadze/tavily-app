@@ -30,7 +30,8 @@ export default function Signup() {
     axios.post('http://localhost:3000/api/signup', values)
       .then(response => {
         console.log('Signup successful', response.data);
-        navigate('/users');
+        const userId = response.data.user.id;
+        navigate(`/users/${userId}`);
       })
       .catch(error => {
         console.error('Signup failed', error.response.data);

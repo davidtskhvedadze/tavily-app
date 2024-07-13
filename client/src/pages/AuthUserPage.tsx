@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Navbar from "../components/Navbar";
+// import Navbar from "../components/Navbar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,16 +24,7 @@ type PlaylistType = {
 }
 
 export default function AuthUserPage() {
-  const [playlists, setPlaylists] = useState<PlaylistType[]>([
-    {
-      name: "Playlist 1",
-      songs: [
-        { name: "Song Name 1", artist: "Artist 1" },
-        { name: "Song Name 2", artist: "Artist 2" },
-        { name: "Song Name 3", artist: "Artist 3" }
-      ]
-    }
-  ]);
+  const [playlists, setPlaylists] = useState<PlaylistType[]>([]);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -52,7 +43,7 @@ export default function AuthUserPage() {
   return (
     <div>
       <div className="fixed top-0 w-full z-50">
-        <Navbar />
+        {/* <Navbar /> */}
       </div>
       <div className="bg-gray-50 min-h-screen flex flex-col mt-4 items-center py-12">
         <Form {...form}>

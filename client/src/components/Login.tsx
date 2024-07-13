@@ -28,7 +28,8 @@ export default function Home() {
     axios.post('http://localhost:3000/api/login', values)
       .then(response => {
         console.log('Login successful', response.data);
-        navigate('/users');
+        const userId = response.data.user.id;
+        navigate(`/users/${userId}`);
       })
       .catch(error => {
         console.error('Login failed', error.response.data);

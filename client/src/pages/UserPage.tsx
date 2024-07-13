@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form";
 import { useForm } from "react-hook-form";
@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "../components/ui/button";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion";
+import { useParams } from 'react-router-dom';
+import axios from "axios";
 
 const formSchema = z.object({
   size: z.string().min(1,{ message: "Size is required" }),
@@ -21,26 +23,20 @@ const formSchema = z.object({
 });
 
 type SongType = {
+    _id: string,
     name: string,
     artist: string
 }
 
 type PlaylistType = {
+    _id: string,
     name: string,
     songs: SongType[]
 }
 
 export default function UserPage() {
-  const [playlists, setPlaylists] = useState<PlaylistType[]>([
-    {
-      name: "Playlist 1",
-      songs: [
-        { name: "Song Name 1", artist: "Artist 1" },
-        { name: "Song Name 2", artist: "Artist 2" },
-        { name: "Song Name 3", artist: "Artist 3" }
-      ]
-    }
-  ]);
+  const [playlists, setPlaylists] = useState<PlaylistType[]>([]);
+  const [userName, setuserName] = useState<string>('');
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -58,15 +54,44 @@ export default function UserPage() {
     },
   });
 
-  function handleSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    setPlaylists([...playlists]);
+  const { id } = useParams<{ id: string }>();
+
+  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+    axios.post(`http://localhost:3000/api/playlist/${id}`, values)
+      .then((response) => {
+        setPlaylists([...playlists, response.data.playlist]);
+        form.reset();
+      })
+      .catch(error => {
+        console.error('Could not add playlist', error.response.data);
+      });
   }
+
+  const handleDelete = (playlistId: string) => {
+    axios.delete(`http://localhost:3000/api/playlist/${id}/${playlistId}`)
+      .then(() => {
+        setPlaylists(prevPlaylists => prevPlaylists.filter(playlist => playlist._id !== playlistId));
+      })
+      .catch(error => {
+        console.error('Could not delete playlist', error.response.data);
+      });
+  }
+
+  useEffect(() => {
+    axios.get(`http://localhost:3000/api/playlist/${id}`)
+      .then(response => {
+        setuserName(response.data.user.name);
+        setPlaylists(response.data.playlists);
+      })
+      .catch(error => {
+        console.error('Could not retrieve playlists', error.response.data);
+      });
+  }, [id]);
 
   return (
     <div>
       <div className="fixed top-0 w-full z-50">
-        <Navbar />
+        <Navbar name={userName}/>
       </div>
       <div className="bg-gray-50 min-h-screen flex flex-col mt-4 items-center py-12">
         <Form {...form} >
@@ -296,15 +321,16 @@ export default function UserPage() {
           </form>
         </Form>
         {playlists.map((playlist: PlaylistType, index: number) => (
-          <Accordion key={`accordion-${index}`} type="multiple">
-            <AccordionItem key={`item-${index}`} value={`item-${index}`}>
+          <Accordion key={index} type="multiple">
+            <AccordionItem key={`item-${index}`} value={`item-${playlist._id}`}>
               <AccordionTrigger>{playlist.name}</AccordionTrigger>
               <AccordionContent>
                 <ul>
-                  {playlist.songs.map((song: SongType, songIndex: number) => (
-                    <li key={`song-${index}-${songIndex}`}>{song.name} - {song.artist}</li>
+                  {playlist.songs.map((song: SongType, index: number) => (
+                    <li key={index}>{song.name} - {song.artist}</li>
                   ))}
                 </ul>
+                <button onClick={() => handleDelete(playlist._id)}>&times;</button>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
