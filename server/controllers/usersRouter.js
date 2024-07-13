@@ -6,7 +6,7 @@ const path = require('path')
 
 const SECRET = config.JWT_SECRET || 'tavily'
 
-  
+
 usersRouter.post('/api/signup', (request, response, next) => {
     const body = request.body
     
@@ -25,15 +25,9 @@ usersRouter.post('/api/signup', (request, response, next) => {
 
             const token = jwt.sign(userForToken, SECRET, { expiresIn: '1h' })
 
-            response.cookie('token', token, {
-                httpOnly: true,
-                secure: false, // set to true if your using https
-                sameSite: 'strict',
-            });
-
             response
               .status(201)
-              .json({ message: 'Sign up successful' })
+              .send({ message: 'User created successfully', user: savedUser })
         })
         .catch(error => next(error))
 })
@@ -59,18 +53,73 @@ usersRouter.post('/api/login', async (request, response, next) => {
 
         const token = jwt.sign(userForToken, SECRET, { expiresIn: '1h' });
 
-        response.cookie('token', token, {
-            httpOnly: true,
-            secure: false, // Set to true in production if using HTTPS
-            sameSite: 'strict', // Adjust according to your cross-site request needs
-            maxAge: 3600000, // Cookie expiration set to match token expiration
-        });
-
-        response.status(200).json({ message: 'Login successful' });
+        response.status(200).send({ message: 'Login successful', user: user });
     } catch (error) {
         next(error);
     }
 });
+
+usersRouter.get('/api/playlist/:id', async (request, response, next) => {
+    const id = request.params.id
+
+    try {
+        const user = await User.findById(id);
+        if (!user) {
+            return response.status(404).send({ error: 'User not found' });
+        }
+
+        response.status(200).send({ message: 'Playlist retrieved successfully', playlists: user.playlists, user: user });
+        
+    } catch (error) {
+        next(error);
+    }
+})
+
+usersRouter.post('/api/playlist/:id', async (request, response, next) => {
+    const id = request.params.id
+    const playlistToAdd = {
+        name: "Playlist 1",
+        songs: [
+          { name: "Song Name 1", artist: "Artist 1" },
+          { name: "Song Name 2", artist: "Artist 2" },
+          { name: "Song Name 3", artist: "Artist 3" }
+        ]
+      }
+
+      try {
+        const updatedUser = await User.findByIdAndUpdate(id, {
+            $push: { playlists: playlistToAdd }
+        }, { new: true });
+
+        if (!updatedUser) {
+            return response.status(404).send({ error: 'User not found' });
+            console.log(updatedUser)
+        }
+
+        response.status(200).send({ message: 'Playlist added successfully', playlist: updatedUser.playlists[updatedUser.playlists.length - 1] });
+    } catch (error) {
+        next(error);
+    }
+})
+
+usersRouter.delete('/api/playlist/:id/:playlistid', async (request, response, next) => {
+    const { id, playlistid } = request.params;
+    console.log(id, playlistid)
+
+    try {
+        const updatedUser = await User.findByIdAndUpdate(id, {
+            $pull: { playlists: { _id: playlistid } }
+        }, { new: true });
+
+        if (!updatedUser) {
+            return response.status(404).send({ error: 'Failed to delete playlist' });
+        }
+
+        response.status(200).send({ message: 'Playlist deleted successfully', playlist: updatedUser.playlists });
+    } catch (error) {
+        next(error);
+    }
+})
 
 
 module.exports = usersRouter
