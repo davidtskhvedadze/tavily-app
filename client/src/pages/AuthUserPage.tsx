@@ -51,13 +51,19 @@ export default function AuthUserPage() {
   }, [user]);
 
   async function getProfile() {
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
-      console.error('Access token not found in localStorage');
-      return; 
+    function getCookie(name: string) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts?.pop()?.split(';')?.shift();
     }
-
-    console.log("accesstoken", accessToken);
+  
+    const accessToken = getCookie('accessToken');
+    if (!accessToken) {
+      console.error('Access token not found in cookies');
+      return;
+    }
+  
+    console.log("accessToken", accessToken);
   
     const response = await fetch('https://api.spotify.com/v1/me', {
       headers: {
@@ -66,7 +72,7 @@ export default function AuthUserPage() {
     });
   
     const data = await response.json();
-    return data; 
+    return data;
   }
 
   return (
