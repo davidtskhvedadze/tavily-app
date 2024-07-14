@@ -74,8 +74,12 @@ usersRouter.post('/api/login', async (request, response, next) => {
 });
 
 usersRouter.get('/api/logout', async (request, response, next) => {
-    response.clearCookie('token', { path: '/' });
-    response.status(200).send({ message: 'Logout successful' });
+    if (request.cookies) {
+        Object.keys(request.cookies).forEach(cookieName => {
+            response.clearCookie(cookieName, { path: '/' });
+        });
+    }
+    response.status(200).send({ message: 'Logout successful, all cookies cleared' });
 })
 
 usersRouter.get('/api/playlist/:id', async (request, response, next) => {

@@ -43,8 +43,6 @@ export default function AuthUserPage() {
     setPlaylists([...playlists, { name: "Playlist 1", songs: [{ name: "Song 1", artist: "Artist 1" }] }]);
   }
 
-
-
   useEffect(() => {
     async function fetchData() {
       if (!token) {
