@@ -59,7 +59,8 @@ export default function UserPage() {
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     axios.post(`http://localhost:3000/api/playlist/${id}`, values)
       .then((response) => {
-        setPlaylists([...playlists, response.data.playlist]);
+        console.log(response.data.playlist);
+        // setPlaylists([...playlists, response.data.playlist]);
         form.reset();
       })
       .catch(error => {

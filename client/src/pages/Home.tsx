@@ -15,9 +15,9 @@ export default function Home() {
     <main className="h-screen">
       <div className="flex h-full">
         <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-4">
-          <p className="flex flex-col justify-center items-center">
+          <p className="flex flex-col justify-center items-center text-3xl mb-2">
             Login
-            <Button onClick={handleLogin} className="flex items-center justify-center text-green-400 py-2 px-1 text-lg m-2">
+            <Button onClick={handleLogin} className="flex items-center justify-center text-green-400 py-2 px-1 text-lg mt-4 mb-1">
               <img src={spotifyLogo} alt="Login with Spotify" className="w-6 h-6 mr-2"/>
               Login with Spotify
             </Button>

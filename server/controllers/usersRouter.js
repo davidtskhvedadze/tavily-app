@@ -3,6 +3,7 @@ const User = require('../models/users')
 const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
 const path = require('path')
+const createPlaylist = require('../utils/userAgent')
 
 const SECRET = config.JWT_SECRET || 'tavily'
 
@@ -100,14 +101,10 @@ usersRouter.get('/api/playlist/:id', async (request, response, next) => {
 
 usersRouter.post('/api/playlist/:id', async (request, response, next) => {
     const id = request.params.id
-    const playlistToAdd = {
-        name: "Playlist 1",
-        songs: [
-          { name: "Song Name 1", artist: "Artist 1" },
-          { name: "Song Name 2", artist: "Artist 2" },
-          { name: "Song Name 3", artist: "Artist 3" }
-        ]
-      }
+    const values = request.body
+
+
+    const playlistToAdd = await createPlaylist(values);
 
       try {
         const updatedUser = await User.findByIdAndUpdate(id, {
