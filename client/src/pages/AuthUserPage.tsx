@@ -58,6 +58,7 @@ export default function AuthUserPage() {
     }
   
     const accessToken = getCookie('accessToken');
+    console.log("accessToken", accessToken);
     if (!accessToken) {
       console.error('Access token not found in cookies');
       return;
