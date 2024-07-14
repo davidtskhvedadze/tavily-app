@@ -26,6 +26,7 @@ type PlaylistType = {
 
 export default function AuthUserPage() {
   const [playlists, setPlaylists] = useState<PlaylistType[]>([]);
+  const [userName, setUserName] = useState<string>("");
   const { token } = useParams<{ token: string }>();
 
   const form = useForm({
@@ -59,6 +60,7 @@ export default function AuthUserPage() {
   
       const data = await response.json();
       console.log("Profile data", data);
+      setUserName(data.display_name);
       return data;
     }
   
@@ -68,7 +70,7 @@ export default function AuthUserPage() {
   return (
     <div>
       <div className="fixed top-0 w-full z-50">
-        <Navbar name={"Jake"}/>
+        <Navbar name={userName}/>
       </div>
       <div className="bg-gray-50 min-h-screen flex flex-col mt-4 items-center py-12">
         <Form {...form}>
