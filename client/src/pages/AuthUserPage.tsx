@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form";
 import { useForm } from "react-hook-form";
@@ -25,6 +25,7 @@ type PlaylistType = {
 
 export default function AuthUserPage() {
   const [playlists, setPlaylists] = useState<PlaylistType[]>([]);
+  const [user, setUser] = useState<string>("");
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -37,7 +38,34 @@ export default function AuthUserPage() {
 
   function handleSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    setPlaylists([...playlists]);
+    setPlaylists([...playlists, { name: "Playlist 1", songs: [{ name: "Song 1", artist: "Artist 1" }] }]);
+  }
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getProfile();
+      console.log(data);
+      setUser(data);
+      console.log(user);
+    }
+    fetchData();
+  }, []);
+
+  async function getProfile() {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      console.error('Access token not found in localStorage');
+      return; 
+    }
+  
+    const response = await fetch('https://api.spotify.com/v1/me', {
+      headers: {
+        Authorization: 'Bearer ' + accessToken
+      }
+    });
+  
+    const data = await response.json();
+    return data; 
   }
 
   return (
