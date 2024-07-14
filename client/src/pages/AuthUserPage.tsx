@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "../components/ui/button";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion";
+import { useParams } from 'react-router-dom';
 
 const formSchema = z.object({
   filterby: z.string().min(1,{ message: "Filter is required" }),
@@ -43,36 +44,31 @@ export default function AuthUserPage() {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await getProfile();
+      const data = await GetProfile();
       console.log("data", data);
       setUser(data);
     }
     fetchData();
   }, [user]);
 
-  async function getProfile() {
-    function getCookie(name: string) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts?.pop()?.split(';')?.shift();
-    }
-  
-    const accessToken = getCookie('accessToken');
-    console.log("accessToken", accessToken);
-    if (!accessToken) {
-      console.error('Access token not found in cookies');
+  async function GetProfile() {
+    const { token } = useParams<{ token: string }>();
+
+    console.log("token", token);
+
+    if (!token) {
+      console.error("No token provided");
       return;
     }
   
-    console.log("accessToken", accessToken);
-  
     const response = await fetch('https://api.spotify.com/v1/me', {
       headers: {
-        Authorization: 'Bearer ' + accessToken
+        Authorization: 'Bearer ' + token
       }
     });
   
     const data = await response.json();
+    console.log("Profile data", data);
     return data;
   }
 
