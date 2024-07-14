@@ -21,6 +21,7 @@ export const theme = {
       border: "hsl(var(--border))",
       input: "hsl(var(--input))",
       ring: "hsl(var(--ring))",
+      spotifyGreen: '#1DB954',
       background: "hsl(var(--background))",
       foreground: "hsl(var(--foreground))",
       primary: {
