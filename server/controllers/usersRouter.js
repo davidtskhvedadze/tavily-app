@@ -25,6 +25,13 @@ usersRouter.post('/api/signup', (request, response, next) => {
 
             const token = jwt.sign(userForToken, SECRET, { expiresIn: '1h' })
 
+            response.cookie('token', token, {
+                httpOnly: true,
+                secure: true, 
+                sameSite: 'Strict',
+                maxAge: 3600000, 
+              });
+
             response
               .status(201)
               .send({ message: 'User created successfully', user: savedUser })
@@ -53,11 +60,23 @@ usersRouter.post('/api/login', async (request, response, next) => {
 
         const token = jwt.sign(userForToken, SECRET, { expiresIn: '1h' });
 
+        response.cookie('token', token, {
+            httpOnly: true,
+            secure: true, 
+            sameSite: 'Strict',
+            maxAge: 3600000, 
+          });
+
         response.status(200).send({ message: 'Login successful', user: user });
     } catch (error) {
         next(error);
     }
 });
+
+usersRouter.get('/api/logout', async (request, response, next) => {
+    response.clearCookie('token', { path: '/' });
+    response.status(200).send({ message: 'Logout successful' });
+})
 
 usersRouter.get('/api/playlist/:id', async (request, response, next) => {
     const id = request.params.id
