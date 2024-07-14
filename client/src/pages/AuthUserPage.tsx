@@ -59,7 +59,14 @@ export default function AuthUserPage() {
       const data = await response.json();
       console.log("Profile data", data);
       setUserName(data.display_name);
-      return data;
+      const playlistsResponse = await fetch('https://api.spotify.com/v1/me/playlists', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      });
+      const playlistsData = await playlistsResponse.json();
+      const allPlaylists = playlistsData.items.map((item: any) => [item.name, item.description, item.tracks.href]);
+      console.log("Playlists data", allPlaylists);
     }
   
     fetchData();

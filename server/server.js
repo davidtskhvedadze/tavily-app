@@ -35,7 +35,7 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 
 app.get('/login', (req, res) => { 
-  const scopes = ['user-read-private', 'user-read-email'];
+  const scopes = ['user-read-private', 'user-read-email', 'playlist-read-private', 'playlist-read-collaborative'];
   const authorizeURL = spotifyApi.createAuthorizeURL(scopes);
   res.redirect(authorizeURL);
 })
