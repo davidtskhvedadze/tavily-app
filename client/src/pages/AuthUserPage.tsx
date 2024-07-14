@@ -49,7 +49,7 @@ export default function AuthUserPage() {
       console.log(user);
     }
     fetchData();
-  }, []);
+  }, [user]);
 
   async function getProfile() {
     const accessToken = localStorage.getItem('accessToken');
@@ -57,6 +57,8 @@ export default function AuthUserPage() {
       console.error('Access token not found in localStorage');
       return; 
     }
+
+    console.log(accessToken);
   
     const response = await fetch('https://api.spotify.com/v1/me', {
       headers: {
