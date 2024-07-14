@@ -26,7 +26,6 @@ type PlaylistType = {
 
 export default function AuthUserPage() {
   const [playlists, setPlaylists] = useState<PlaylistType[]>([]);
-  const [user, setUser] = useState<string>("");
   const { token } = useParams<{ token: string }>();
 
   const form = useForm({
@@ -43,35 +42,28 @@ export default function AuthUserPage() {
     setPlaylists([...playlists, { name: "Playlist 1", songs: [{ name: "Song 1", artist: "Artist 1" }] }]);
   }
 
+
+
   useEffect(() => {
     async function fetchData() {
-      const data = await getProfile();
-      console.log("data", data);
-      setUser(data);
-    }
-    fetchData();
-  }, [user]);
-
-  async function getProfile() {
-
-
-    console.log("token", token);
-
-    if (!token) {
-      console.error("No token provided");
-      return;
-    }
-  
-    const response = await fetch('https://api.spotify.com/v1/me', {
-      headers: {
-        Authorization: 'Bearer ' + token
+      if (!token) {
+        console.error("No token provided");
+        return;
       }
-    });
   
-    const data = await response.json();
-    console.log("Profile data", data);
-    return data;
-  }
+      const response = await fetch('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      });
+  
+      const data = await response.json();
+      console.log("Profile data", data);
+      return data;
+    }
+  
+    fetchData();
+  }, [token]);
 
   return (
     <div>
