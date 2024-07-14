@@ -8,10 +8,24 @@ type NavbarProps = {
 export default function Navbar({ name }: NavbarProps) {
   const navigate = useNavigate();
 
-  function handleLogout(e: React.MouseEvent<HTMLButtonElement>) {
+  const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    navigate('/');
-  }
+
+    try {
+      const response = await fetch('/api/logout', {
+        method: 'GET', 
+        credentials: 'include', 
+      });
+
+      if (response.ok) {
+        navigate('/');
+      } else {
+        console.error('Logout failed');
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    }
+  };
 
   return (
     <Menubar className="flex justify-between">
