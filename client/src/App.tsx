@@ -10,7 +10,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/users/:id" element={<UserPage />} />
-        <Route path="/authusers" element={<AuthUserPage />} />
+        <Route path="/authusers/:acesstoken" element={<AuthUserPage />} />
       </Routes>
     </Router>
   )

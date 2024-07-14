@@ -46,7 +46,7 @@ app.get('/callback', (req, res) => {
 
   if (error) {
     console.error(`Callback Error: ${error}`);
-    res.redirect(`/error?message=${encodeURIComponent(error)}`); // Redirect to an error page
+    res.redirect(`/error?message=${encodeURIComponent(error)}`);
     return;
   }
 
@@ -59,13 +59,15 @@ app.get('/callback', (req, res) => {
       spotifyApi.setAccessToken(access_token);
       spotifyApi.setRefreshToken(refresh_token);
 
-      res.redirect(`http://localhost:3000/authusers`);
+      res.cookie('accessToken', access_token, { httpOnly: true, secure: false });
+      res.redirect(`http://localhost:3000/authusers/${access_token}`);
 
 
       setInterval(async () => {
         const data = await spotifyApi.refreshAccessToken();
         const access_token = data.body['access_token'];
         spotifyApi.setAccessToken(access_token);
+        res.cookie('accessToken', access_token, { httpOnly: true, secure: false });
       }, expires_in / 2 * 1000);
     })
     .catch(error => {

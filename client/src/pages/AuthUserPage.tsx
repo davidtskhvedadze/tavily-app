@@ -1,5 +1,5 @@
 import { useState } from "react";
-// import Navbar from "../components/Navbar";
+import Navbar from "../components/Navbar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,7 +43,7 @@ export default function AuthUserPage() {
   return (
     <div>
       <div className="fixed top-0 w-full z-50">
-        {/* <Navbar /> */}
+        <Navbar name={"Jake"}/>
       </div>
       <div className="bg-gray-50 min-h-screen flex flex-col mt-4 items-center py-12">
         <Form {...form}>
