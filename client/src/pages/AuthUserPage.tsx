@@ -27,6 +27,7 @@ type PlaylistType = {
 export default function AuthUserPage() {
   const [playlists, setPlaylists] = useState<PlaylistType[]>([]);
   const [user, setUser] = useState<string>("");
+  const { token } = useParams<{ token: string }>();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -44,15 +45,15 @@ export default function AuthUserPage() {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await GetProfile();
+      const data = await getProfile();
       console.log("data", data);
       setUser(data);
     }
     fetchData();
   }, [user]);
 
-  async function GetProfile() {
-    const { token } = useParams<{ token: string }>();
+  async function getProfile() {
+
 
     console.log("token", token);
 
