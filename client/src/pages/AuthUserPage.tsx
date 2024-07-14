@@ -44,9 +44,8 @@ export default function AuthUserPage() {
   useEffect(() => {
     async function fetchData() {
       const data = await getProfile();
-      console.log(data);
+      console.log("data", data);
       setUser(data);
-      console.log(user);
     }
     fetchData();
   }, [user]);
@@ -58,7 +57,7 @@ export default function AuthUserPage() {
       return; 
     }
 
-    console.log(accessToken);
+    console.log("accesstoken", accessToken);
   
     const response = await fetch('https://api.spotify.com/v1/me', {
       headers: {
