@@ -3,7 +3,7 @@ const User = require('../models/users')
 const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
 const path = require('path')
-const createPlaylist = require('../utils/userAgent')
+const { createPlaylist } = require('../utils/userAgent')
 
 const SECRET = config.JWT_SECRET || 'tavily'
 

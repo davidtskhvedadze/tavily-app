@@ -61,7 +61,6 @@ export default function UserPage() {
       .then((response) => {
         console.log(response.data.playlist);
         // setPlaylists([...playlists, response.data.playlist]);
-        form.reset();
       })
       .catch(error => {
         console.error('Could not add playlist', error.response.data);

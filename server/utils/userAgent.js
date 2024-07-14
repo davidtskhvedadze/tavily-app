@@ -4,7 +4,6 @@ const { TavilySearchResults } = require("@langchain/community/tools/tavily_searc
 const { createReactAgent } = require("@langchain/langgraph/prebuilt");
 const { HumanMessage } = require("@langchain/core/messages");
 
-
 // Initialize OpenAI LLM
 const llm = new ChatOpenAI({
   apiKey: config.OPENAI_API_KEY,
@@ -64,16 +63,20 @@ async function createPlaylist(userPreferences) {
 
   const userQuestion = `
     Create a playlist with the following preferences:
-    Genre: ${genre}
-    Time Period: ${timePeriod}
-    Mood/Emotion: ${moodEmotion}
-    Activity Context: ${activityContext}
-    Song Popularity: ${songPopularity}
-    Tempo: ${tempo}
-    Explicit Content: ${explicitContent}
-    Language: ${language}
-    Diversity: ${diversity}
-    Size: ${size}
+    - Genre: ${genre}
+    - Time Period: ${timePeriod}
+    - Mood/Emotion: ${moodEmotion}
+    - Activity Context: ${activityContext}
+    - Song Popularity: ${songPopularity}
+    - Tempo: ${tempo}
+    - Explicit Content: ${explicitContent}
+    - Language: ${language}
+    - Diversity: ${diversity}
+    - Size: ${size}
+
+    The resulting playlist should be a JSON object with an appropriate playlist name and an array of songs. Each song should have the following attributes:
+    - Name
+    - Artist
   `;
 
   const agentAnswer = await langgraphAgent.stream({
@@ -84,7 +87,18 @@ async function createPlaylist(userPreferences) {
   for await (const chunk of agentAnswer) {
     playlist = processChunks(chunk);
   }
-  return playlist;
+
+  // Convert the playlist array to a JSON object
+  const playlistJson = {
+    name: `${genre} ${activityContext} Playlist`, // Dynamic playlist name based on user preferences
+    preferences: userPreferences,
+    songs: playlist.slice(0, size).map((song, index) => ({
+      name: song.name || `Song ${index + 1}`,
+      artist: song.artist || 'Unknown Artist',
+    })),
+  };
+
+  return playlistJson;
 }
 
 module.exports = { createPlaylist };
