@@ -1,4 +1,4 @@
-const config = require('../utils/config');
+const config = require('../utils/config')
 const { ChatOpenAI } = require("@langchain/openai");
 const { TavilySearchResults } = require("@langchain/community/tools/tavily_search");
 const { createReactAgent } = require("@langchain/langgraph/prebuilt");
@@ -23,26 +23,23 @@ const langgraphAgent = createReactAgent({
 
 // Define a function to process chunks from the agent
 function processChunks(chunk) {
-  let playlist = [];
+  const playlist = [];
   if ("agent" in chunk) {
     for (const message of chunk.agent.messages) {
-      if (message.content) {
-        const jsonStartIndex = message.content.indexOf('{');
-        const jsonEndIndex = message.content.lastIndexOf('}');
-        
-        if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
-          const jsonString = message.content.slice(jsonStartIndex, jsonEndIndex + 1);
-          try {
-            const responseJson = JSON.parse(jsonString);
-            if (responseJson.songs) {
-              playlist = responseJson.songs;
-            }
-          } catch (error) {
-            console.log(`Failed to parse JSON: ${error.message}`);
+      if (
+        "tool_calls" in message.additional_kwargs != undefined &&
+        Array.isArray(message.additional_kwargs.tool_calls)
+      ) {
+        const toolCalls = message.additional_kwargs.tool_calls;
+        toolCalls.forEach((toolCall) => {
+          const toolName = toolCall.function.name;
+          if (toolName === "TavilySearchResults") {
+            playlist.push(...toolCall.results);
           }
-        } else {
-          console.log(`No JSON found in message: ${message.content}`);
-        }
+        });
+      } else {
+        const agentAnswer = message.content;
+        console.log(`Agent: ${agentAnswer}`);
       }
     }
   }
@@ -96,7 +93,10 @@ async function createPlaylist(userPreferences) {
   // Convert the playlist array to a JSON object
   const playlistJson = {
     playlist_name: `My ${timePeriod} ${genre} ${activityContext} Playlist`,
-    songs: playlist
+    songs: playlist.map(song => ({
+      name: song.name,
+      artist: song.artist,
+    }))
   };
 
   return playlistJson;
