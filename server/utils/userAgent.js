@@ -27,13 +27,21 @@ function processChunks(chunk) {
   if ("agent" in chunk) {
     for (const message of chunk.agent.messages) {
       if (message.content) {
-        try {
-          const responseJson = JSON.parse(message.content);
-          if (responseJson.songs) {
-            playlist = responseJson.songs;
+        const jsonStartIndex = message.content.indexOf('{');
+        const jsonEndIndex = message.content.lastIndexOf('}');
+        
+        if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
+          const jsonString = message.content.slice(jsonStartIndex, jsonEndIndex + 1);
+          try {
+            const responseJson = JSON.parse(jsonString);
+            if (responseJson.songs) {
+              playlist = responseJson.songs;
+            }
+          } catch (error) {
+            console.log(`Failed to parse JSON: ${error.message}`);
           }
-        } catch (error) {
-          console.log(`Failed to parse JSON: ${error.message}`);
+        } else {
+          console.log(`No JSON found in message: ${message.content}`);
         }
       }
     }
