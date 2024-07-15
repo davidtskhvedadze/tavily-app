@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "../components/ui/button";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion";
+// import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion";
 import { useParams } from 'react-router-dom';
 import axios from "axios";
 
@@ -35,7 +35,13 @@ type PlaylistType = {
 }
 
 export default function UserPage() {
-  const [playlists, setPlaylists] = useState<PlaylistType[]>([]);
+  const [playlists, setPlaylists] = useState<PlaylistType[]>([
+    {
+      _id: "",
+      name: "",
+      songs: []
+    }
+  ]);
   const [userName, setuserName] = useState<string>('');
 
   const form = useForm({
@@ -60,22 +66,22 @@ export default function UserPage() {
     axios.post(`http://localhost:3000/api/playlist/${id}`, values)
       .then((response) => {
         console.log(response.data.playlist);
-        // setPlaylists([...playlists, response.data.playlist]);
+        setPlaylists([...playlists, response.data.playlist]);
       })
       .catch(error => {
         console.error('Could not add playlist', error.response.data);
       });
   }
 
-  const handleDelete = (playlistId: string) => {
-    axios.delete(`http://localhost:3000/api/playlist/${id}/${playlistId}`)
-      .then(() => {
-        setPlaylists(prevPlaylists => prevPlaylists.filter(playlist => playlist._id !== playlistId));
-      })
-      .catch(error => {
-        console.error('Could not delete playlist', error.response.data);
-      });
-  }
+  // const handleDelete = (playlistId: string) => {
+  //   axios.delete(`http://localhost:3000/api/playlist/${id}/${playlistId}`)
+  //     .then(() => {
+  //       setPlaylists(prevPlaylists => prevPlaylists.filter(playlist => playlist._id !== playlistId));
+  //     })
+  //     .catch(error => {
+  //       console.error('Could not delete playlist', error.response.data);
+  //     });
+  // }
 
   useEffect(() => {
     axios.get(`http://localhost:3000/api/playlist/${id}`)
@@ -320,7 +326,7 @@ export default function UserPage() {
             </div>
           </form>
         </Form>
-        {playlists.map((playlist: PlaylistType, index: number) => (
+        {/* {playlists.map((playlist: PlaylistType, index: number) => (
           <Accordion key={index} type="multiple">
             <AccordionItem key={`item-${index}`} value={`item-${playlist._id}`}>
               <AccordionTrigger>{playlist.name}</AccordionTrigger>
@@ -334,7 +340,7 @@ export default function UserPage() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        ))} 
+        ))}  */}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-const config = require('../utils/config')
+const config = require('../utils/config');
 const { ChatOpenAI } = require("@langchain/openai");
 const { TavilySearchResults } = require("@langchain/community/tools/tavily_search");
 const { createReactAgent } = require("@langchain/langgraph/prebuilt");
@@ -27,7 +27,7 @@ function processChunks(chunk) {
   if ("agent" in chunk) {
     for (const message of chunk.agent.messages) {
       if (
-        "tool_calls" in message.additional_kwargs != undefined &&
+        "tool_calls" in message.additional_kwargs &&
         Array.isArray(message.additional_kwargs.tool_calls)
       ) {
         const toolCalls = message.additional_kwargs.tool_calls;
@@ -85,17 +85,18 @@ async function createPlaylist(userPreferences) {
 
   let playlist = [];
   for await (const chunk of agentAnswer) {
-    playlist = processChunks(chunk);
+    playlist = [...playlist, ...processChunks(chunk)];
   }
+
+  console.log("************ Playlist ************", playlist);
 
   // Convert the playlist array to a JSON object
   const playlistJson = {
-    name: `${genre} ${activityContext} Playlist`, // Dynamic playlist name based on user preferences
-    preferences: userPreferences,
-    songs: playlist.slice(0, size).map((song, index) => ({
-      name: song.name || `Song ${index + 1}`,
-      artist: song.artist || 'Unknown Artist',
-    })),
+    playlist_name: `My ${timePeriod} ${genre} ${activityContext} Playlist`,
+    songs: playlist.map(song => ({
+      name: song.name,
+      artist: song.artist,
+    }))
   };
 
   return playlistJson;
