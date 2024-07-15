@@ -23,23 +23,18 @@ const langgraphAgent = createReactAgent({
 
 // Define a function to process chunks from the agent
 function processChunks(chunk) {
-  const playlist = [];
+  let playlist = [];
   if ("agent" in chunk) {
     for (const message of chunk.agent.messages) {
-      if (
-        "tool_calls" in message.additional_kwargs &&
-        Array.isArray(message.additional_kwargs.tool_calls)
-      ) {
-        const toolCalls = message.additional_kwargs.tool_calls;
-        toolCalls.forEach((toolCall) => {
-          const toolName = toolCall.function.name;
-          if (toolName === "TavilySearchResults") {
-            playlist.push(...toolCall.results);
+      if (message.content) {
+        try {
+          const responseJson = JSON.parse(message.content);
+          if (responseJson.songs) {
+            playlist = responseJson.songs;
           }
-        });
-      } else {
-        const agentAnswer = message.content;
-        console.log(`Agent: ${agentAnswer}`);
+        } catch (error) {
+          console.log(`Failed to parse JSON: ${error.message}`);
+        }
       }
     }
   }
@@ -93,10 +88,7 @@ async function createPlaylist(userPreferences) {
   // Convert the playlist array to a JSON object
   const playlistJson = {
     playlist_name: `My ${timePeriod} ${genre} ${activityContext} Playlist`,
-    songs: playlist.map(song => ({
-      name: song.name,
-      artist: song.artist,
-    }))
+    songs: playlist
   };
 
   return playlistJson;
