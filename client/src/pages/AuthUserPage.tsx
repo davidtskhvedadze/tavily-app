@@ -116,9 +116,9 @@ export default function AuthUserPage() {
                     <FormControl className="flex">
                       <select {...field} className="form-select block w-full p-2 mt-1 border-gray-300 shadow-sm rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-center">
                         <option value="">Select Duration</option>
-                        <option value="short-term">short-term</option>
-                        <option value="medium-term">medium-term</option>
-                        <option value="long-term">long-term</option>
+                        <option value="short_term">short-term</option>
+                        <option value="medium_term">medium-term</option>
+                        <option value="long_term">long-term</option>
                       </select>
                     </FormControl>
                     <FormMessage />
