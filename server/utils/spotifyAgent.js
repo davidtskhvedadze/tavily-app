@@ -22,17 +22,10 @@ const langgraphAgent = createReactAgent({
 });
 
 
-  const GENERATION_PROMPT = `You are an expert music curator. If any field is blank, assume it encompasses any for that field. Generate a playlist based on the user's preferences and limit the amount to the size:
-- Genre: {genre}
-- Time Period: {timePeriod}
-- Mood/Emotion: {moodEmotion}
-- Activity Context: {activityContext}
-- Song Popularity: {songPopularity}
-- Tempo: {tempo}
-- Explicit Content: {explicitContent}
-- Language: {language}
-- Diversity: {diversity}
+  const GENERATION_PROMPT = `You are an expert music curator. Generate a playlist based on the user's preferences and limit the amount to the size:
+- Type: {type}
 - Size: {size}
+- Names: {names}
 
 The resulting playlist should be a JSON object with an appropriate playlist name and an array of songs. Each song should have the following attributes:
 - Name
@@ -78,16 +71,9 @@ function extractPlaylistInfo(chunk) {
 }
 // Define the main function
 async function createSpotifyPlaylist(userPreferences) {
-  const formattedPrompt = GENERATION_PROMPT.replace('{genre}', userPreferences.genre)
-    .replace('{timePeriod}', userPreferences.timePeriod)
-    .replace('{moodEmotion}', userPreferences.moodEmotion)
-    .replace('{activityContext}', userPreferences.activityContext)
-    .replace('{songPopularity}', userPreferences.songPopularity)
-    .replace('{tempo}', userPreferences.tempo)
-    .replace('{explicitContent}', userPreferences.explicitContent)
-    .replace('{language}', userPreferences.language)
-    .replace('{diversity}', userPreferences.diversity)
-    .replace('{size}', userPreferences.size);
+  const formattedPrompt = GENERATION_PROMPT.replace('{type}', userPreferences.type)
+    .replace('{size}', userPreferences.size)
+    .replace('{names}', userPreferences.names.join(', '));
 
   const agentAnswerStream = await langgraphAgent.stream({
     messages: [new HumanMessage({ content: formattedPrompt })],

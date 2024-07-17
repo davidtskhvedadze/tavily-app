@@ -123,11 +123,8 @@ usersRouter.post('/api/playlist/:id', async (request, response, next) => {
     }
 })
 
-usersRouter.post('/api/spotifyplaylist/:id', async (request, response, next) => {
-    const id = request.params.id
-    const values = request.body
-
-
+usersRouter.post('/api/spotifyplaylist/:token', async (request, response, next) => {
+    const values = request.body;
     const playlistToAdd = await createSpotifyPlaylist(values);
     
     response.status(200).send({ message: 'Playlist created successfully', playlist: playlistToAdd });

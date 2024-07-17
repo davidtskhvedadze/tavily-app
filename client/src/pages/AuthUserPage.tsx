@@ -7,6 +7,8 @@ import * as z from "zod";
 import { Button } from "../components/ui/button";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion";
 import { useParams } from 'react-router-dom';
+import { API_BASE_URL } from "../config";
+import axios from "axios";
 
 const formSchema = z.object({
   filterby: z.string().min(1,{ message: "Filter is required" }),
@@ -55,6 +57,16 @@ export default function AuthUserPage() {
       names: playlistData.items.map((item: {name: string}) => item.name)
     }
     console.log("Playlist data", llmData);
+
+    axios.post(`${API_BASE_URL}/api/spotifyplaylist/${token}`, values)
+      .then((response) => {
+        console.log(response.data.playlist);
+        setPlaylists([...playlists, response.data.playlist]);
+        form.reset();
+      })
+      .catch(error => {
+        console.error('Could not add playlist', error.response.data);
+      });
     setPlaylists([...playlists, { name: "Playlist 1", songs: [{ name: "Song 1", artist: "Artist 1" }] }]);
   }
 
