@@ -10,6 +10,7 @@ const SPOTIFY_CALLBACK_URL = process.env.SPOTIFY_CALLBACK_URL
 const AUTH_URL = process.env.AUTH_URL
 const TOKEN_URL = process.env.TOKEN_URL
 const API_BASE_URL = process.env.API_BASE_URL
+const NODE_ENV = process.env.NODE_ENV || 'development'
 
 module.exports = {
   MONGO_URI,
@@ -21,5 +22,6 @@ module.exports = {
   SPOTIFY_CALLBACK_URL,
   AUTH_URL,
   TOKEN_URL,
-  API_BASE_URL
+  API_BASE_URL,
+  NODE_ENV
 }

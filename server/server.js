@@ -22,11 +22,16 @@ mongoose.connect(url)
     logger.error('error connecting to MongoDB:', error.message)
   })
 
-const spotifyApi = new SpotifyWebAPI({
-  clientId: config.SPOTIFY_CLIENT_ID,
-  clientSecret: config.SPOTIFY_CLIENT_SECRET,
-  redirectUri: config.SPOTIFY_CALLBACK_URL
-});
+  const isProduction = config.NODE_ENV === 'production';
+  const baseUrl = isProduction ? 'https://tunetailor.onrender.com' : 'http://localhost:3000';
+  const callbackPath = process.env.SPOTIFY_CALLBACK_PATH;
+  const fullCallbackUrl = `${baseUrl}${callbackPath}`;
+  
+  const spotifyApi = new SpotifyWebAPI({
+    clientId: process.env.SPOTIFY_CLIENT_ID,
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+    redirectUri: fullCallbackUrl
+  });
 
 app.use(cors())
 app.use(express.static('dist'))
