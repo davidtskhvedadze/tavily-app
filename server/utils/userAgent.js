@@ -39,7 +39,6 @@ The resulting playlist should be a JSON object with an appropriate playlist name
 - Artist
 Please add no other writing in the response, only the JSON object.`;
 
-// Define a function to process chunks from the agent
 function extractPlaylistInfo(chunk) {
   let playlistInfo = {
     name: "",
@@ -50,22 +49,19 @@ function extractPlaylistInfo(chunk) {
     const message = chunk.agent.messages[0];
     console.log(message);
     if (message.lc_kwargs && message.lc_kwargs.content) {
-      // Split the content string into separate JSON strings
       const jsonStrings = message.lc_kwargs.content.split('}\n{').map((str, index, arr) => {
-        // Add missing curly braces that were removed by split
         if (index > 0) str = '{' + str;
         if (index < arr.length - 1) str = str + '}';
         return str;
       });
 
-      // Process each JSON string individually
       jsonStrings.forEach(jsonStr => {
         try {
           const contentObj = JSON.parse(jsonStr);
           if (!playlistInfo.name) playlistInfo.name = contentObj.playlist_name;
           playlistInfo.songs.push(...contentObj.songs.map(song => ({
-            name: song.name || song.Name, // Adjusted to match the capitalized keys in the JSON
-            artist: song.artist || song.Artist // Adjusted to match the capitalized keys in the JSON
+            name: song.name || song.Name, 
+            artist: song.artist || song.Artist
           })));
         } catch (e) {
           console.error("Error parsing JSON string:", e);
