@@ -155,12 +155,13 @@ export default function AuthUserPage() {
               />
             </div>
             <div className="flex justify-center mt-4">
-              <Button type="submit" className="px-6 py-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+              <Button type="submit" className="px-6 py-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
                Submit
               </Button>
             </div>
           </form>
         </Form>
+        <h2 className="mt-4 font-semibold text-lg text-gray-100">Generated Playlist(s)</h2>
         <PlaylistModule playlists={playlists} handleDelete={handleDelete} />
       </div>
     </div>
