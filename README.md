@@ -5,6 +5,10 @@
 TuneTailor is a music playlist generator that leverages the power of Spotify's API, LangChain, and Tavily's unique algorithms to create personalized playlists for users.
 </div>
 
+## Live Application
+
+Check out TuneTailor live at [https://tunetailor.onrender.com](https://tunetailor.onrender.com)! Experience personalized playlist generation in action and discover new music tailored just for you.
+
 ## Tech Stack
 <div align="center">
     <img src="https://skillicons.dev/icons?i=typescript,react,mongodb,express" alt="Tech Stack">
