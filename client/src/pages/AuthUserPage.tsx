@@ -57,7 +57,7 @@ export default function AuthUserPage() {
     }
     console.log("Playlist data", llmData);
 
-    axios.post(`/api/spotifyplaylist/${token}`, values)
+    axios.post(`/api/spotifyplaylist/${token}`, llmData)
       .then((response) => {
         console.log(response.data.playlist);
         setPlaylists([...playlists, response.data.playlist]);
