@@ -5,13 +5,12 @@ import Signup from "../components/Signup";
 import spotifyLogo from "../assets/Spotify_Primary_Logo_RGB_Green.png";
 import pic from "../assets/anne-nygard-ChKVvRDbqew-unsplash.jpg";
 import { Button } from "../components/ui/button";
-import { API_BASE_URL } from "../config";
 
 export default function Home() {
   const [isSignup, setIsSignup] = useState(false);
 
   function handleLogin() {
-    window.location.href = `${API_BASE_URL}/login`;
+    window.location.href = `/login`;
   }  
   return (
     <main className="h-screen">

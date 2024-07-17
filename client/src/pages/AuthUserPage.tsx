@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "../components/ui/button";
 import { useParams } from 'react-router-dom';
-import { API_BASE_URL } from "../config";
 import PlaylistModule from "../components/PlaylistModule";
 import axios from "axios";
 import Loading from "../components/Loading";
@@ -58,7 +57,7 @@ export default function AuthUserPage() {
     }
     console.log("Playlist data", llmData);
 
-    axios.post(`${API_BASE_URL}/api/spotifyplaylist/${token}`, values)
+    axios.post(`/api/spotifyplaylist/${token}`, values)
       .then((response) => {
         console.log(response.data.playlist);
         setPlaylists([...playlists, response.data.playlist]);
