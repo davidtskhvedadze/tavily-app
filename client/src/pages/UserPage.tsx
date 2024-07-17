@@ -5,21 +5,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "../components/ui/button";
-// import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion";
 import { useParams } from 'react-router-dom';
 import axios from "axios";
 
 const formSchema = z.object({
   size: z.string().min(1,{ message: "Size is required" }),
-  genre: z.string().min(1, { message: "Genre is required" }),
-  timePeriod: z.string().min(1, { message: "Time Period is required" }),
-  moodEmotion: z.string().min(1, { message: "Mood/Emotion is required" }),
-  activityContext: z.string().min(1, { message: "Activity Context is required" }),
-  songPopularity: z.string().min(1, { message: "Song Popularity is required" }),
-  tempo: z.string().min(1, { message: "Tempo is required" }),
-  explicitContent: z.string().min(1, { message: "Explicit Content is required" }),
-  language: z.string().min(1, { message: "Language is required" }),
-  diversity: z.string().min(1, { message: "Diversity is required" })
+  genre: z.string().optional(),
+  timePeriod: z.string().optional(),
+  moodEmotion: z.string().optional(),
+  activityContext: z.string().optional(),
+  songPopularity: z.string().optional(),
+  tempo: z.string().optional(),
+  explicitContent: z.string().optional(),
+  language: z.string().optional(),
+  diversity: z.string().optional()
 });
 
 type SongType = {
@@ -67,21 +67,22 @@ export default function UserPage() {
       .then((response) => {
         console.log(response.data.playlist);
         setPlaylists([...playlists, response.data.playlist]);
+        form.reset();
       })
       .catch(error => {
         console.error('Could not add playlist', error.response.data);
       });
   }
 
-  // const handleDelete = (playlistId: string) => {
-  //   axios.delete(`http://localhost:3000/api/playlist/${id}/${playlistId}`)
-  //     .then(() => {
-  //       setPlaylists(prevPlaylists => prevPlaylists.filter(playlist => playlist._id !== playlistId));
-  //     })
-  //     .catch(error => {
-  //       console.error('Could not delete playlist', error.response.data);
-  //     });
-  // }
+  const handleDelete = (playlistId: string) => {
+    axios.delete(`http://localhost:3000/api/playlist/${id}/${playlistId}`)
+      .then(() => {
+        setPlaylists(prevPlaylists => prevPlaylists.filter(playlist => playlist._id !== playlistId));
+      })
+      .catch(error => {
+        console.error('Could not delete playlist', error.response.data);
+      });
+  }
 
   useEffect(() => {
     axios.get(`http://localhost:3000/api/playlist/${id}`)
@@ -326,7 +327,7 @@ export default function UserPage() {
             </div>
           </form>
         </Form>
-        {/* {playlists.map((playlist: PlaylistType, index: number) => (
+        {playlists.map((playlist: PlaylistType, index: number) => (
           <Accordion key={index} type="multiple">
             <AccordionItem key={`item-${index}`} value={`item-${playlist._id}`}>
               <AccordionTrigger>{playlist.name}</AccordionTrigger>
@@ -340,7 +341,7 @@ export default function UserPage() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        ))}  */}
+        ))} 
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ const langgraphAgent = createReactAgent({
 });
 
 
-  const GENERATION_PROMPT = `You are an expert music curator. Generate a playlist based on the user's preferences and the initial plan:
+  const GENERATION_PROMPT = `You are an expert music curator. If any field is blank, assume it encompasses any for that field. Generate a playlist based on the user's preferences and limit the amount to the size:
 - Genre: {genre}
 - Time Period: {timePeriod}
 - Mood/Emotion: {moodEmotion}
@@ -48,15 +48,29 @@ function extractPlaylistInfo(chunk) {
 
   if (chunk.agent && chunk.agent.messages && chunk.agent.messages.length > 0) {
     const message = chunk.agent.messages[0];
+    console.log(message);
     if (message.lc_kwargs && message.lc_kwargs.content) {
-      const contentObj = JSON.parse(message.lc_kwargs.content);
+      // Split the content string into separate JSON strings
+      const jsonStrings = message.lc_kwargs.content.split('}\n{').map((str, index, arr) => {
+        // Add missing curly braces that were removed by split
+        if (index > 0) str = '{' + str;
+        if (index < arr.length - 1) str = str + '}';
+        return str;
+      });
 
-      playlistInfo.name = contentObj.playlist_name;
-
-      playlistInfo.songs = contentObj.songs.map(song => ({
-        name: song.name, // Adjusted to match the capitalized keys in the JSON
-        artist: song.artist // Adjusted to match the capitalized keys in the JSON
-      }));
+      // Process each JSON string individually
+      jsonStrings.forEach(jsonStr => {
+        try {
+          const contentObj = JSON.parse(jsonStr);
+          if (!playlistInfo.name) playlistInfo.name = contentObj.playlist_name;
+          playlistInfo.songs.push(...contentObj.songs.map(song => ({
+            name: song.name || song.Name, // Adjusted to match the capitalized keys in the JSON
+            artist: song.artist || song.Artist // Adjusted to match the capitalized keys in the JSON
+          })));
+        } catch (e) {
+          console.error("Error parsing JSON string:", e);
+        }
+      });
     }
   }
 
