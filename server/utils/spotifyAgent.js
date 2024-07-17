@@ -19,15 +19,23 @@ const langgraphAgent = createReactAgent({
 });
 
 
-const GENERATION_PROMPT = `You are an expert music curator. Generate a playlist based on the user's preferences and limit the amount to the size:
-- Type: {type}
-- Size: {size}
-- Names: {names}
+const GENERATION_PROMPT = `As a skilled music curator, your task is to create a playlist that reflects the themes and styles of the provided song or artist names. Use the names in the 'names' array as your guide. The playlist should cater to the specified 'type' and contain a number of songs equal to 'size'. 
 
-The resulting playlist should be a JSON object with an appropriate playlist name (make the name appropriate to the theme of the songs) and an array of songs. Each song should have the following attributes:
-- Name
-- Artist
-Please add no other writing in the response, only the JSON object.`;
+Details:
+- Type: {type} (e.g., genre, mood)
+- Size: {size} (the number of songs in the playlist)
+- Names: {names} (song or artist names to inspire the playlist)
+
+Output a JSON object with:
+1. A playlist name that captures the essence of the songs.
+2. An array of songs, where each song includes:
+   - Name
+   - Artist
+
+Please ensure the response contains only the JSON object, with no additional text.
+
+Example:
+If 'names' includes ["Coldplay", "Imagine Dragons"], 'type' is "motivational", and 'size' is 5, the output should be a JSON object with a fitting playlist name and five songs that match the motivational theme inspired by the artists mentioned.`;
 
 function extractPlaylistInfo(chunk) {
   let playlistInfo = {
