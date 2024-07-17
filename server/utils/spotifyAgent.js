@@ -24,7 +24,7 @@ const GENERATION_PROMPT = `You are an expert music curator. Generate a playlist 
 - Size: {size}
 - Names: {names}
 
-The resulting playlist should be a JSON object with an appropriate playlist name and an array of songs. Each song should have the following attributes:
+The resulting playlist should be a JSON object with an appropriate playlist name (make the name appropriate to the theme of the songs) and an array of songs. Each song should have the following attributes:
 - Name
 - Artist
 Please add no other writing in the response, only the JSON object.`;
