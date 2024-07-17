@@ -48,10 +48,11 @@ export default function AuthUserPage() {
       }
     });
     const playlistData = await playlistResponse.json();
+    
     const llmData = {
       type: values.filterby,
       size: values.size,
-      items: playlistData.items.map((name: string) => name)
+      names: playlistData.items.map((item: {name: string}) => item.name)
     }
     console.log("Playlist data", llmData);
     setPlaylists([...playlists, { name: "Playlist 1", songs: [{ name: "Song 1", artist: "Artist 1" }] }]);
