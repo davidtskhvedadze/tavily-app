@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "../components/ui/button";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion";
 import { useParams } from 'react-router-dom';
+import PlaylistModule from "../components/PlaylistModule";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -327,21 +327,7 @@ export default function UserPage() {
             </div>
           </form>
         </Form>
-        {playlists.map((playlist: PlaylistType, index: number) => (
-          <Accordion key={index} type="multiple">
-            <AccordionItem key={`item-${index}`} value={`item-${playlist._id}`}>
-              <AccordionTrigger>{playlist.name}</AccordionTrigger>
-              <AccordionContent>
-                <ul>
-                  {playlist.songs.map((song: SongType, index: number) => (
-                    <li key={index}>{song.name} - {song.artist}</li>
-                  ))}
-                </ul>
-                <button onClick={() => handleDelete(playlist._id)}>&times;</button>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        ))} 
+        <PlaylistModule playlists={playlists} handleDelete={handleDelete} />
       </div>
     </div>
   );
