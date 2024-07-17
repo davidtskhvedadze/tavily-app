@@ -7,7 +7,11 @@
     "server": "npm run dev --prefix server",
     "build:ui": "cross-env NODE_ENV=production rimraf server/dist && npm run build --prefix client && cp -r client/dist server/",
     "deploy:full": "npm run build:ui && git add . && git commit -m \"UI Build\" && git push",
-    "start": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm run build:client && npm run build:backend",
+    "start": "node backend/index.js",
+    "build:client": "cd client && npm install && npm run build",
+    "build:backend": "cd backend && npm install"
   },
   "keywords": [],
   "author": "",
