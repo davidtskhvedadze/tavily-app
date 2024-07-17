@@ -24,7 +24,7 @@ mongoose.connect(url)
 
   const isProduction = config.NODE_ENV === 'production';
   const baseUrl = isProduction ? 'https://tunetailor.onrender.com' : 'http://localhost:3000';
-  const callbackPath = process.env.SPOTIFY_CALLBACK_PATH;
+  const callbackPath = config.SPOTIFY_CALLBACK_URL;
   const fullCallbackUrl = `${baseUrl}${callbackPath}`;
   
   const spotifyApi = new SpotifyWebAPI({
