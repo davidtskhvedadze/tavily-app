@@ -8,7 +8,7 @@
     "build:ui": "cross-env NODE_ENV=production rimraf server/dist && npm run build --prefix client && cp -r client/dist server/",
     "deploy:full": "npm run build:ui && git add . && git commit -m \"UI Build\" && git push",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build": "npm run build:client && npm install && npm run copy:client-to-server",
+    "build": "npm run build:client && npm run build:server && npm install && npm run copy:client-to-server",
     "start": "node server/server.js",
     "build:client": "cd client && npm install && npm run build",
     "build:server": "cd server && npm install",
