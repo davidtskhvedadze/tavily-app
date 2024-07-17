@@ -2,7 +2,7 @@ import React from 'react';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../components/ui/accordion';
 
 type PlaylistType = {
-  _id: string;
+  _id?: string;
   name: string;
   songs: SongType[];
 };
@@ -22,7 +22,7 @@ const PlaylistModule: React.FC<PlaylistModuleProps> = ({ playlists, handleDelete
     <>
       {playlists.map((playlist: PlaylistType, index: number) => (
         <Accordion key={index} type="multiple">
-          <AccordionItem key={`item-${index}`} value={`item-${playlist._id}`}>
+          <AccordionItem key={`item-${index}`} value={`item-${playlist._id || index}`}>
             <AccordionTrigger>{playlist.name}</AccordionTrigger>
             <AccordionContent>
               <ul>
@@ -30,7 +30,7 @@ const PlaylistModule: React.FC<PlaylistModuleProps> = ({ playlists, handleDelete
                   <li key={index}>{song.name} - {song.artist}</li>
                 ))}
               </ul>
-              <button onClick={() => handleDelete(playlist._id)}>&times;</button>
+              <button onClick={() => handleDelete(playlist._id || index.toString())}>&times;</button>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

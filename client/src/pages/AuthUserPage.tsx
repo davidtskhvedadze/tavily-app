@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "../components/ui/button";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion";
 import { useParams } from 'react-router-dom';
 import { API_BASE_URL } from "../config";
+import PlaylistModule from "../components/PlaylistModule";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -40,9 +40,6 @@ export default function AuthUserPage() {
     },
   });
 
-  // For the form, we need to make a request to the Spotify API to get the user's top tracks or artists
-  // https://api.spotify.com/v1/me/top/artists?time_range=medium_term&limit=10
-
   async function handleSubmit(values: z.infer<typeof formSchema>) {
     const playlistResponse = await fetch(`https://api.spotify.com/v1/me/top/${values.filterby}?time_range=${values.duration}&limit=${values.size}`, {
       headers: {
@@ -69,6 +66,10 @@ export default function AuthUserPage() {
       });
   }
 
+  const handleDelete = (playlistIndex: string) => {
+    setPlaylists(prevPlaylists => prevPlaylists.filter((_, i) => i !== parseInt(playlistIndex)));
+  }
+
   useEffect(() => {
     async function fetchData() {
       if (!token) {
@@ -85,14 +86,6 @@ export default function AuthUserPage() {
       const data = await response.json();
       console.log("Profile data", data);
       setUserName(data.display_name);
-      // const playlistsResponse = await fetch('https://api.spotify.com/v1/me/playlists', {
-      //   headers: {
-      //     Authorization: 'Bearer ' + token
-      //   }
-      // });
-      // const playlistsData = await playlistsResponse.json();
-      // const allPlaylists = playlistsData.items.map((item: any) => [item.name, item.description, item.tracks.href]);
-      // console.log("Playlists data", allPlaylists);
     }
   
     fetchData();
@@ -168,20 +161,7 @@ export default function AuthUserPage() {
             </div>
           </form>
         </Form>
-        {playlists.map((playlist, index) => (
-          <Accordion key={`accordion-${index}`} type="multiple">
-            <AccordionItem key={`item-${index}`} value={`item-${index}`}>
-              <AccordionTrigger>{playlist.name}</AccordionTrigger>
-              <AccordionContent>
-                <ul>
-                  {playlist.songs.map((song, songIndex) => (
-                    <li key={`song-${index}-${songIndex}`}>{song.name} - {song.artist}</li>
-                  ))}
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        ))} 
+        <PlaylistModule playlists={playlists} handleDelete={handleDelete} />
       </div>
     </div>
   );
