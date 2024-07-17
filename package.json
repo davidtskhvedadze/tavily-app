@@ -7,9 +7,8 @@
     "server": "npm run dev --prefix server",
     "build:ui": "cross-env NODE_ENV=production rimraf server/dist && npm run build --prefix client && cp -r client/dist server/",
     "deploy:full": "npm run build:ui && git add . && git commit -m \"UI Build\" && git push",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
     "build": "npm run build:client && npm run build:server && npm install && npm run copy:client-to-server",
-    "start": "node server/server.js",
     "build:client": "cd client && npm install && npm run build",
     "build:server": "cd server && npm install",
     "copy:client-to-server": "rimraf server/dist && cp -r client/dist server/"
@@ -19,11 +18,11 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "concurrently": "^8.2.2",
     "cross-env": "^7.0.3"
   },
   "dependencies": {
     "nodemon": "^3.1.4",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "concurrently": "^8.2.2"
   }
 }
