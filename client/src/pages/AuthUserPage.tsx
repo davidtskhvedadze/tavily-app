@@ -67,7 +67,6 @@ export default function AuthUserPage() {
       .catch(error => {
         console.error('Could not add playlist', error.response.data);
       });
-    setPlaylists([...playlists, { name: "Playlist 1", songs: [{ name: "Song 1", artist: "Artist 1" }] }]);
   }
 
   useEffect(() => {
