@@ -8,6 +8,7 @@ import { Button } from "../components/ui/button";
 import { useParams } from 'react-router-dom';
 import { API_BASE_URL } from "../config";
 import PlaylistModule from "../components/PlaylistModule";
+import Loading from "../components/Loading";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -44,6 +45,7 @@ export default function UserPage() {
     }
   ]);
   const [userName, setuserName] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -64,6 +66,7 @@ export default function UserPage() {
   const { id } = useParams<{ id: string }>();
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
     axios.post(`${API_BASE_URL}/api/playlist/${id}`, values)
       .then((response) => {
         console.log(response.data.playlist);
@@ -72,6 +75,9 @@ export default function UserPage() {
       })
       .catch(error => {
         console.error('Could not add playlist', error.response.data);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -329,7 +335,7 @@ export default function UserPage() {
           </form>
         </Form>
         <h2 className="mt-4 font-semibold text-lg text-gray-100">Generated Playlist(s)</h2>
-        <PlaylistModule playlists={playlists} handleDelete={handleDelete} />
+        {loading === true ? <Loading /> : <PlaylistModule playlists={playlists} handleDelete={handleDelete} />}
       </div>
     </div>
   );

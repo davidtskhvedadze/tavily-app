@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import { API_BASE_URL } from "../config";
 import PlaylistModule from "../components/PlaylistModule";
 import axios from "axios";
+import Loading from "../components/Loading";
 
 const formSchema = z.object({
   filterby: z.string().min(1,{ message: "Filter is required" }),
@@ -29,6 +30,7 @@ type PlaylistType = {
 export default function AuthUserPage() {
   const [playlists, setPlaylists] = useState<PlaylistType[]>([]);
   const [userName, setUserName] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const { token } = useParams<{ token: string }>();
 
   const form = useForm({
@@ -41,6 +43,7 @@ export default function AuthUserPage() {
   });
 
   async function handleSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     const playlistResponse = await fetch(`https://api.spotify.com/v1/me/top/${values.filterby}?time_range=${values.duration}&limit=${values.size}`, {
       headers: {
         Authorization: 'Bearer ' + token
@@ -63,6 +66,9 @@ export default function AuthUserPage() {
       })
       .catch(error => {
         console.error('Could not add playlist', error.response.data);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -162,7 +168,7 @@ export default function AuthUserPage() {
           </form>
         </Form>
         <h2 className="mt-4 font-semibold text-lg text-gray-100">Generated Playlist(s)</h2>
-        <PlaylistModule playlists={playlists} handleDelete={handleDelete} />
+        {loading === true ? <Loading /> : <PlaylistModule playlists={playlists} handleDelete={handleDelete} />}
       </div>
     </div>
   );
