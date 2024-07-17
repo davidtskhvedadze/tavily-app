@@ -41,8 +41,14 @@ export default function AuthUserPage() {
   // For the form, we need to make a request to the Spotify API to get the user's top tracks or artists
   // https://api.spotify.com/v1/me/top/artists?time_range=medium_term&limit=10
 
-  function handleSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function handleSubmit(values: z.infer<typeof formSchema>) {
+    const playlistResponse = await fetch(`https://api.spotify.com/v1/me/top/${values.filterby}?time_range=${values.duration}&limit=${values.size}`, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+    const playlistData = await playlistResponse.json();
+    console.log("Playlist data", playlistData);
     setPlaylists([...playlists, { name: "Playlist 1", songs: [{ name: "Song 1", artist: "Artist 1" }] }]);
   }
 
