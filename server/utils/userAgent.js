@@ -21,85 +21,72 @@ const langgraphAgent = createReactAgent({
   tools: [tavily],
 });
 
+
+  const GENERATION_PROMPT = `You are an expert music curator. Generate a playlist based on the user's preferences and the initial plan:
+- Genre: {genre}
+- Time Period: {timePeriod}
+- Mood/Emotion: {moodEmotion}
+- Activity Context: {activityContext}
+- Song Popularity: {songPopularity}
+- Tempo: {tempo}
+- Explicit Content: {explicitContent}
+- Language: {language}
+- Diversity: {diversity}
+- Size: {size}
+
+The resulting playlist should be a JSON object with an appropriate playlist name and an array of songs. Each song should have the following attributes:
+- Name
+- Artist
+Please add no other writing in the response, only the JSON object.`;
+
 // Define a function to process chunks from the agent
-function processChunks(chunk) {
-  const playlist = [];
-  if ("agent" in chunk) {
-    for (const message of chunk.agent.messages) {
-      if (
-        "tool_calls" in message.additional_kwargs != undefined &&
-        Array.isArray(message.additional_kwargs.tool_calls)
-      ) {
-        const toolCalls = message.additional_kwargs.tool_calls;
-        toolCalls.forEach((toolCall) => {
-          const toolName = toolCall.function.name;
-          if (toolName === "TavilySearchResults") {
-            playlist.push(...toolCall.results);
-          }
-        });
-      } else {
-        const agentAnswer = message.content;
-        console.log(`Agent: ${agentAnswer}`);
-      }
-    }
-  }
-  return playlist;
-}
-
-// Define the function to create a playlist based on user preferences
-async function createPlaylist(userPreferences) {
-  const {
-    size,
-    genre,
-    timePeriod,
-    moodEmotion,
-    activityContext,
-    songPopularity,
-    tempo,
-    explicitContent,
-    language,
-    diversity,
-  } = userPreferences;
-
-  const userQuestion = `
-    Create a playlist with the following preferences:
-    - Genre: ${genre}
-    - Time Period: ${timePeriod}
-    - Mood/Emotion: ${moodEmotion}
-    - Activity Context: ${activityContext}
-    - Song Popularity: ${songPopularity}
-    - Tempo: ${tempo}
-    - Explicit Content: ${explicitContent}
-    - Language: ${language}
-    - Diversity: ${diversity}
-    - Size: ${size}
-
-    The resulting playlist should be a JSON object with an appropriate playlist name and an array of songs. Each song should have the following attributes:
-    - Name
-    - Artist
-  `;
-
-  const agentAnswer = await langgraphAgent.stream({
-    messages: [new HumanMessage({ content: userQuestion })],
-  });
-
-  let playlist = [];
-  for await (const chunk of agentAnswer) {
-    playlist = [...playlist, ...processChunks(chunk)];
-  }
-
-  console.log("************ Playlist ************", playlist);
-
-  // Convert the playlist array to a JSON object
-  const playlistJson = {
-    playlist_name: `My ${timePeriod} ${genre} ${activityContext} Playlist`,
-    songs: playlist.map(song => ({
-      name: song.name,
-      artist: song.artist,
-    }))
+function extractPlaylistInfo(chunk) {
+  let playlistInfo = {
+    name: "",
+    songs: []
   };
 
-  return playlistJson;
+  if (chunk.agent && chunk.agent.messages && chunk.agent.messages.length > 0) {
+    const message = chunk.agent.messages[0];
+    if (message.lc_kwargs && message.lc_kwargs.content) {
+      const contentObj = JSON.parse(message.lc_kwargs.content);
+
+      playlistInfo.name = contentObj.playlist_name;
+
+      playlistInfo.songs = contentObj.songs.map(song => ({
+        name: song.name, // Adjusted to match the capitalized keys in the JSON
+        artist: song.artist // Adjusted to match the capitalized keys in the JSON
+      }));
+    }
+  }
+
+  return playlistInfo;
+}
+// Define the main function
+async function createPlaylist(userPreferences) {
+  const formattedPrompt = GENERATION_PROMPT.replace('{genre}', userPreferences.genre)
+    .replace('{timePeriod}', userPreferences.timePeriod)
+    .replace('{moodEmotion}', userPreferences.moodEmotion)
+    .replace('{activityContext}', userPreferences.activityContext)
+    .replace('{songPopularity}', userPreferences.songPopularity)
+    .replace('{tempo}', userPreferences.tempo)
+    .replace('{explicitContent}', userPreferences.explicitContent)
+    .replace('{language}', userPreferences.language)
+    .replace('{diversity}', userPreferences.diversity)
+    .replace('{size}', userPreferences.size);
+
+  const agentAnswerStream = await langgraphAgent.stream({
+    messages: [new HumanMessage({ content: formattedPrompt })],
+  });
+
+
+  let playlist = { name: "", songs: [] };
+  for await (const chunk of agentAnswerStream) {
+  const chunkPlaylist = extractPlaylistInfo(chunk);
+  if (chunkPlaylist.name) playlist.name = chunkPlaylist.name; // Update playlist name if found
+  playlist.songs = playlist.songs.concat(chunkPlaylist.songs); // Concatenate songs
+}
+  return playlist ;
 }
 
 module.exports = { createPlaylist };
