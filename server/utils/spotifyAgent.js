@@ -18,24 +18,24 @@ const langgraphAgent = createReactAgent({
   tools: [tavily],
 });
 
-
-const GENERATION_PROMPT = `As a skilled music curator, your task is to create a playlist that reflects the themes and styles of the provided song or artist names. Use the names in the 'names' array as your guide. The playlist should cater to the specified 'type' and contain a number of songs equal to 'size'. 
+const GENERATION_PROMPT = `As a skilled music curator, your task is to create a playlist that reflects the themes and styles of the provided song or artist names. Importantly, if the names provided are of specific songs, ensure the playlist does not contain these exact songs. Instead, find songs that are similar in style, theme, or vibe. Use the names in the 'names' array as your guide. The playlist should cater to the specified 'type' and contain a number of songs equal to 'size'. 
 
 Details:
 - Type: {type} (e.g., genre, mood)
 - Size: {size} (the number of songs in the playlist)
-- Names: {names} (song or artist names to inspire the playlist)
+- Names: {names} (song or artist names to inspire the playlist, without including these exact songs in the final playlist)
 
 Output a JSON object with:
 1. A playlist name that captures the essence of the songs.
 2. An array of songs, where each song includes:
    - Name
    - Artist
+   - Ensure the songs are similar to the provided names but do not include the exact songs from the 'names' array.
 
 Please ensure the response contains only the JSON object, with no additional text.
 
 Example:
-If 'names' includes ["Coldplay", "Imagine Dragons"], 'type' is "motivational", and 'size' is 5, the output should be a JSON object with a fitting playlist name and five songs that match the motivational theme inspired by the artists mentioned.`;
+If 'names' includes ["Coldplay - Yellow", "Imagine Dragons - Believer"], 'type' is "motivational", and 'size' is 5, the output should be a JSON object with a fitting playlist name and five songs that match the motivational theme inspired by the artists and songs mentioned, without including 'Yellow' or 'Believer' in the playlist.`;
 
 function extractPlaylistInfo(chunk) {
   let playlistInfo = {
