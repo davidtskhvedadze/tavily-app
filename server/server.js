@@ -59,7 +59,7 @@ app.get('/callback', (req, res) => {
       spotifyApi.setRefreshToken(refresh_token);
 
       res.cookie('accessToken', access_token, { httpOnly: true, secure: false });
-      res.redirect(`http://localhost:3000/authusers/${access_token}`);
+      res.redirect(`/authusers/${access_token}`);
 
 
       setInterval(async () => {

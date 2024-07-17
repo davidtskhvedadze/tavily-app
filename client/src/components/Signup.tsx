@@ -27,7 +27,7 @@ export default function Signup() {
   const navigate = useNavigate();
 
   function handleSubmit(values: z.infer<typeof formSchema>) {
-    axios.post('http://localhost:3000/api/signup', values)
+    axios.post('/api/signup', values)
       .then(response => {
         console.log('Signup successful', response.data);
         const userId = response.data.user.id;
