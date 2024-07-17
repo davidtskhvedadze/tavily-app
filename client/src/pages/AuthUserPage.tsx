@@ -92,20 +92,20 @@ export default function AuthUserPage() {
   }, [token]);
 
   return (
-    <div>
-      <div className="fixed top-0 w-full z-50">
+    <div className="bg-gray-900">
+      <div className="sticky top-0 w-full z-50">
         <Navbar name={userName}/>
       </div>
-      <div className="bg-gray-50 min-h-screen flex flex-col mt-4 items-center py-12">
+      <div className="bg-black min-h-screen flex flex-col mt-10 items-center py-14e">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className=" flex flex-col w-full max-w-4xl p-6 shadow-md rounded-lg bg-white">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col w-full max-w-4xl p-6 shadow-md rounded-lg bg-gray-900">
             <div className="flex flex-wrap justify-center gap-2">
               <FormField
                 control={form.control}
                 name="filterby"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="flex justify-center mt-1 font-semibold">Filter by</FormLabel>
+                    <FormLabel className="flex justify-center mt-1 font-semibold text-gray-100">Filter by</FormLabel>
                     <FormControl className="flex">
                       <select {...field} className="form-select block w-full p-2 mt-1 border-gray-300 shadow-sm rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-center">
                         <option value="">Select Filter</option>
@@ -122,7 +122,7 @@ export default function AuthUserPage() {
                 name="duration"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="flex justify-center mt-1 font-semibold">Duration</FormLabel>
+                    <FormLabel className="flex justify-center mt-1 font-semibold text-gray-100">Duration</FormLabel>
                     <FormControl className="flex">
                       <select {...field} className="form-select block w-full p-2 mt-1 border-gray-300 shadow-sm rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-center">
                         <option value="">Select Duration</option>
@@ -140,7 +140,7 @@ export default function AuthUserPage() {
                 name="size"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="flex justify-center mt-1 font-semibold">Size</FormLabel>
+                    <FormLabel className="flex justify-center mt-1 font-semibold text-gray-100">Size</FormLabel>
                     <FormControl className="flex">
                       <select {...field} className="form-select block w-full p-2 mt-1 border-gray-300 shadow-sm rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-center">
                         <option value="">Select Size</option>
