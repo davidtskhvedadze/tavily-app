@@ -26,8 +26,6 @@ This stack represents the core technologies behind TuneTailor, including its bac
 - Form validation using Zod to ensure data integrity, helping to prevent errors and improve user input handling.
 
 ## Notes
-- Users need to have a Spotify account to utilize TuneTailor.
-- The application requires access to Spotify's Web API for fetching user data.
 - Playlists generated are based on the user's listening history and preferences.
 - TuneTailor's innovative use of LangChain, Tavily, and its own algorithms sets it apart in the music playlist generation space, offering users a unique and personalized way to discover music.
 
