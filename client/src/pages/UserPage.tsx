@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "../components/ui/button";
 import { useParams } from 'react-router-dom';
+import { API_BASE_URL } from "../config";
 import PlaylistModule from "../components/PlaylistModule";
 import axios from "axios";
 
@@ -63,7 +64,7 @@ export default function UserPage() {
   const { id } = useParams<{ id: string }>();
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    axios.post(`http://localhost:3000/api/playlist/${id}`, values)
+    axios.post(`${API_BASE_URL}/api/playlist/${id}`, values)
       .then((response) => {
         console.log(response.data.playlist);
         setPlaylists([...playlists, response.data.playlist]);
@@ -75,7 +76,7 @@ export default function UserPage() {
   }
 
   const handleDelete = (playlistId: string) => {
-    axios.delete(`http://localhost:3000/api/playlist/${id}/${playlistId}`)
+    axios.delete(`${API_BASE_URL}/api/playlist/${id}/${playlistId}`)
       .then(() => {
         setPlaylists(prevPlaylists => prevPlaylists.filter(playlist => playlist._id !== playlistId));
       })
@@ -85,7 +86,7 @@ export default function UserPage() {
   }
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/api/playlist/${id}`)
+    axios.get(`${API_BASE_URL}/api/playlist/${id}`)
       .then(response => {
         setuserName(response.data.user.name);
         setPlaylists(response.data.playlists);
