@@ -114,7 +114,6 @@ usersRouter.post('/api/playlist/:id', async (request, response, next) => {
 
         if (!updatedUser) {
             return response.status(404).send({ error: 'User not found' });
-            console.log(updatedUser)
         }
 
         response.status(200).send({ message: 'Playlist added successfully', playlist: updatedUser.playlists[updatedUser.playlists.length - 1] });

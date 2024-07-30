@@ -71,22 +71,35 @@ function extractPlaylistInfo(chunk) {
   return playlistInfo;
 }
 async function createSpotifyPlaylist(userPreferences) {
-  const formattedPrompt = GENERATION_PROMPT.replace('{type}', userPreferences.type)
-    .replace('{size}', userPreferences.size)
-    .replace('{names}', userPreferences.names.join(', '));
+  const MAX_RETRIES = 5; // Define the maximum number of retries
+  let attempts = 0;
 
-  const agentAnswerStream = await langgraphAgent.stream({
-    messages: [new HumanMessage({ content: formattedPrompt })],
-  });
+  while (attempts < MAX_RETRIES) {
+    try {
+      const formattedPrompt = GENERATION_PROMPT.replace('{type}', userPreferences.type)
+        .replace('{size}', userPreferences.size)
+        .replace('{names}', userPreferences.names.join(', '));
 
+      const agentAnswerStream = await langgraphAgent.stream({
+        messages: [new HumanMessage({ content: formattedPrompt })],
+      });
 
-  let playlist = { name: "", songs: [] };
-  for await (const chunk of agentAnswerStream) {
-  const chunkPlaylist = extractPlaylistInfo(chunk);
-  if (chunkPlaylist.name) playlist.name = chunkPlaylist.name; 
-  playlist.songs = playlist.songs.concat(chunkPlaylist.songs);
-}
-  return playlist ;
+      let playlist = { name: "", songs: [] };
+      for await (const chunk of agentAnswerStream) {
+        const chunkPlaylist = extractPlaylistInfo(chunk);
+        if (chunkPlaylist.name) playlist.name = chunkPlaylist.name;
+        playlist.songs = playlist.songs.concat(chunkPlaylist.songs);
+      }
+      return playlist;
+    } catch (error) {
+      console.error(`Error creating Spotify playlist (attempt ${attempts + 1}):`, error);
+      attempts++;
+      if (attempts >= MAX_RETRIES) {
+        console.error("Max retries reached. Returning default playlist.");
+        return { name: "Default Playlist", songs: [] };
+      }
+    }
+  }
 }
 
 module.exports = { createSpotifyPlaylist };

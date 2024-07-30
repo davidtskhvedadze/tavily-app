@@ -72,31 +72,44 @@ function extractPlaylistInfo(chunk) {
 
   return playlistInfo;
 }
-// Define the main function
+
 async function createPlaylist(userPreferences) {
-  const formattedPrompt = GENERATION_PROMPT.replace('{genre}', userPreferences.genre)
-    .replace('{timePeriod}', userPreferences.timePeriod)
-    .replace('{moodEmotion}', userPreferences.moodEmotion)
-    .replace('{activityContext}', userPreferences.activityContext)
-    .replace('{songPopularity}', userPreferences.songPopularity)
-    .replace('{tempo}', userPreferences.tempo)
-    .replace('{explicitContent}', userPreferences.explicitContent)
-    .replace('{language}', userPreferences.language)
-    .replace('{diversity}', userPreferences.diversity)
-    .replace('{size}', userPreferences.size);
+  const MAX_RETRIES = 5;
+  let attempts = 0;
 
-  const agentAnswerStream = await langgraphAgent.stream({
-    messages: [new HumanMessage({ content: formattedPrompt })],
-  });
+  while (attempts < MAX_RETRIES) {
+    try {
+      const formattedPrompt = GENERATION_PROMPT.replace('{genre}', userPreferences.genre)
+        .replace('{timePeriod}', userPreferences.timePeriod)
+        .replace('{moodEmotion}', userPreferences.moodEmotion)
+        .replace('{activityContext}', userPreferences.activityContext)
+        .replace('{songPopularity}', userPreferences.songPopularity)
+        .replace('{tempo}', userPreferences.tempo)
+        .replace('{explicitContent}', userPreferences.explicitContent)
+        .replace('{language}', userPreferences.language)
+        .replace('{diversity}', userPreferences.diversity)
+        .replace('{size}', userPreferences.size);
 
+      const agentAnswerStream = await langgraphAgent.stream({
+        messages: [new HumanMessage({ content: formattedPrompt })],
+      });
 
-  let playlist = { name: "", songs: [] };
-  for await (const chunk of agentAnswerStream) {
-  const chunkPlaylist = extractPlaylistInfo(chunk);
-  if (chunkPlaylist.name) playlist.name = chunkPlaylist.name; // Update playlist name if found
-  playlist.songs = playlist.songs.concat(chunkPlaylist.songs); // Concatenate songs
-}
-  return playlist ;
+      let playlist = { name: "", songs: [] };
+      for await (const chunk of agentAnswerStream) {
+        const chunkPlaylist = extractPlaylistInfo(chunk);
+        if (chunkPlaylist.name) playlist.name = chunkPlaylist.name;
+        playlist.songs = playlist.songs.concat(chunkPlaylist.songs);
+      }
+      return playlist;
+    } catch (error) {
+      console.error(`Error creating playlist (attempt ${attempts + 1}):`, error);
+      attempts++;
+      if (attempts >= MAX_RETRIES) {
+        console.error("Max retries reached. Returning default playlist.");
+        return { name: "Default Playlist", songs: [] };
+      }
+    }
+  }
 }
 
 module.exports = { createPlaylist };
