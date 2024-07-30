@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "../components/ui/button";
 import { useParams } from 'react-router-dom';
+import { useToast } from "../components/ui/use-toast";
 import PlaylistModule from "../components/PlaylistModule";
 import axios from "axios";
 import Loading from "../components/Loading";
@@ -31,6 +32,7 @@ export default function AuthUserPage() {
   const [userName, setUserName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const { token } = useParams<{ token: string }>();
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -43,32 +45,35 @@ export default function AuthUserPage() {
 
   async function handleSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    const playlistResponse = await fetch(`https://api.spotify.com/v1/me/top/${values.filterby}?time_range=${values.duration}&limit=${values.size}`, {
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    });
-    const playlistData = await playlistResponse.json();
-    
-    const llmData = {
-      type: values.filterby,
-      size: values.size,
-      names: playlistData.items.map((item: {name: string}) => item.name)
-    }
-    console.log("Playlist data", llmData);
-
-    axios.post(`/api/spotifyplaylist/${token}`, llmData)
-      .then((response) => {
-        console.log(response.data.playlist);
-        setPlaylists([...playlists, response.data.playlist]);
-        form.reset();
-      })
-      .catch(error => {
-        console.error('Could not add playlist', error.response.data);
-      })
-      .finally(() => {
-        setLoading(false);
+    try {
+      const playlistResponse = await fetch(`https://api.spotify.com/v1/me/top/${values.filterby}?time_range=${values.duration}&limit=${values.size}`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
       });
+      const playlistData = await playlistResponse.json();
+  
+      const llmData = {
+        type: values.filterby,
+        size: values.size,
+        names: playlistData.items.map((item: { name: string }) => item.name)
+      };
+      console.log("Playlist data", llmData);
+  
+      const response = await axios.post(`/api/spotifyplaylist/${token}`, llmData);
+      console.log(response.data.playlist);
+      setPlaylists([...playlists, response.data.playlist]);
+      form.reset();
+    } catch (error) {
+      console.error('Could not add playlist', error);
+      toast({
+        title: "Could not add playlist",
+        description: "An error occurred while adding the playlist. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleDelete = (playlistIndex: string) => {

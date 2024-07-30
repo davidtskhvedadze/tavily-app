@@ -6,6 +6,7 @@ import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../components/ui/use-toast";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email format" }),
@@ -13,7 +14,8 @@ const formSchema = z.object({
 });
 
 export default function Home() {
-
+  const { toast } = useToast();
+  
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -30,9 +32,21 @@ export default function Home() {
         console.log('Login successful', response.data);
         const userId = response.data.user.id;
         navigate(`/users/${userId}`);
+        toast({
+          title: "Login successful",
+          description: "You have successfully logged in.",
+          variant: "success",
+          duration: 5000
+        });
       })
-      .catch(error => {
-        console.error('Login failed', error.response.data);
+      .catch((error) => {
+        console.error('Login failed', error);
+        toast({
+          title: "Login failed",
+          description: "Invalid email or password",
+          variant: "destructive",
+          duration: 5000
+        })
       });
   }
 
@@ -60,7 +74,7 @@ export default function Home() {
               return <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="enter your password" type="text" {...field} />
+                  <Input placeholder="enter your password" type="password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -5,6 +5,7 @@ import * as z from "zod";
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
 import { useNavigate } from "react-router-dom";
+import { useToast } from "./ui/use-toast";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -14,6 +15,7 @@ const formSchema = z.object({
 });
 
 export default function Signup() {
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -32,9 +34,21 @@ export default function Signup() {
         console.log('Signup successful', response.data);
         const userId = response.data.user.id;
         navigate(`/users/${userId}`);
+        toast({
+          title: "Signup successful",
+          description: "You have successfully signed up.",
+          variant: "success",
+          duration: 5000
+        });
       })
       .catch(error => {
-        console.error('Signup failed', error.response.data);
+        console.error('Signup failed', error);
+        toast({
+          title: "Signup failed",
+          description: "Invalid email or password",
+          variant: "destructive",
+          duration: 5000
+        });
       });
   }
 

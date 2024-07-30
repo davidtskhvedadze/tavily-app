@@ -36,6 +36,7 @@ type PlaylistType = {
 }
 
 export default function UserPage() {
+
   const [playlists, setPlaylists] = useState<PlaylistType[]>([
     {
       _id: "",
@@ -64,20 +65,18 @@ export default function UserPage() {
 
   const { id } = useParams<{ id: string }>();
 
-  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+  async function handleSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    axios.post(`/api/playlist/${id}`, values)
-      .then((response) => {
-        console.log(response.data.playlist);
-        setPlaylists([...playlists, response.data.playlist]);
-        form.reset();
-      })
-      .catch(error => {
-        console.error('Could not add playlist', error.response.data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const response = await axios.post(`/api/playlist/${id}`, values);
+      console.log(response.data.playlist);
+      setPlaylists([...playlists, response.data.playlist]);
+      form.reset();
+    } catch (error) {
+      console.error('Could not add playlist', error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleDelete = (playlistId: string) => {

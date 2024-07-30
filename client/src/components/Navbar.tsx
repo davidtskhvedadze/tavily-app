@@ -1,5 +1,6 @@
 import { Menubar } from "../components/ui/menubar";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../components/ui/use-toast";
 import tuneTailorLogo from '../assets/musical-note-music-svgrepo-com.svg';
 
 type NavbarProps = {
@@ -7,6 +8,7 @@ type NavbarProps = {
 };
 
 export default function Navbar({ name }: NavbarProps) {
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -20,8 +22,20 @@ export default function Navbar({ name }: NavbarProps) {
 
       if (response.ok) {
         navigate('/');
+        toast({
+          title: 'Logout successful',
+          description: 'You have successfully logged out.',
+          variant: 'success',
+          duration: 5000,
+        });
       } else {
         console.error('Logout failed');
+        toast({
+          title: 'Logout failed',
+          description: 'An error occurred while logging out.',
+          variant: 'destructive',
+          duration: 5000,
+        });
       }
     } catch (error) {
       console.error('Network error:', error);
